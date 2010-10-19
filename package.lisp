@@ -38,5 +38,9 @@
            #:cancel-handler #:event-handler
            #:set-timer
            #:canceledp
-           ;;; Managing Time
-           #:offset-time))
+           ;; Managing Time
+           #:offset-time
+           ;; constants
+           #:now #:forever
+           #:data-add #:data-or #:mach-receive #:mach-send
+           #:proc #:read #:signal #:timer #:vnode #:write))
