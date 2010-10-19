@@ -24,7 +24,8 @@
 (defcfun "dispatch_queue_create" queue (label :string) (attr queue-attribute))
 (defmethod make-instance
            ((type (eql 'queue))
-            &key (label (error "Can't create a queue without a label.")) attribute)
+            &key (label (error "Can't create a queue without a label."))
+                 (attribute (cffi:null-pointer)))
   (dispatch-queue-create label attribute))
 (defcfun (label "dispatch_queue_get_label") :string (queue queue))
 (defcfun "dispatch_set_target_queue" :void (object object) (queue queue))
