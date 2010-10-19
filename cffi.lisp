@@ -109,10 +109,17 @@
 
 ;;; convenience functions
 
-(defmacro with-dispatch-object ((var creator) &body body)
+(defmacro with-object ((var creator) &body body)
   `(let ((,var ,creator))
      (unwind-protect
          (progn
            (retain ,var)
            ,@body)
        (release ,var))))
+
+(defmacro with-semaphore-held ((semaphore timeout) &body body)
+  `(unwind-protect
+       (progn
+         (wait-on-semaphore ,semaphore ,timeout)
+         ,@body)
+     (signal-semaphore ,semaphore)))

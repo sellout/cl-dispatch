@@ -43,4 +43,6 @@
            ;; constants
            #:now #:forever
            #:data-add #:data-or #:mach-receive #:mach-send
-           #:proc #:read #:signal #:timer #:vnode #:write))
+           #:proc #:read #:signal #:timer #:vnode #:write
+           ;; convenience functions
+           #:with-object #:with-semaphore-held))
