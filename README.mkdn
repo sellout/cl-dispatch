@@ -1,5 +1,5 @@
 cl-dispatch is a Common Lisp wrapper around
-[[Grand Central Dispatch|http://en.wikipedia.org/wiki/Grand_Central_Dispatch] (aka
+[[Grand Central Dispatch|http://en.wikipedia.org/wiki/Grand_Central_Dispatch]] (aka
 [[libdispatch|http://libdispatch.macosforge.org/]]). It allows you to make lightweight
 queues and semaphores which allow the kernel to schedule your tasks across multiple cores.
 
