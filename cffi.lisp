@@ -46,7 +46,8 @@
 (defcfun (leave "dispatch_group_leave") :void (group group))
 (defcfun (dispatch-group-notify "dispatch_group_notify_f") :void
   (group group) (queue queue) (context :pointer) (work function))
-(defcfun (wait-on-group "dispatch_group_wait") :long (group group) (timeout time))
+(defcfun (wait-on-group "dispatch_group_wait") inverted-boolean
+  (group group) (timeout time))
 
 ;;; Managing Dispatch Objects
 
@@ -72,8 +73,9 @@
            ((type (eql 'semaphore))
             &key (value (error "Can't create a semaphore without a value.")))
   (dispatch-semaphore-create value))
-(defcfun (signal-semaphore "dispatch_semaphore_signal") :long (dsema semaphore))
-(defcfun (wait-on-semaphore "dispatch_semaphore_wait") :long
+(defcfun (signal-semaphore "dispatch_semaphore_signal") inverted-boolean
+  (dsema semaphore))
+(defcfun (wait-on-semaphore "dispatch_semaphore_wait") inverted-boolean
   (dsema semaphore) (timeout time))
 
 ;;; Handling Events
@@ -100,9 +102,8 @@
   handler)
 (defcfun (set-timer "dispatch_source_set_timer") :void
   (source source) (start time) (interval :uint64) (leeway :uint64))
-(defcfun "dispatch_source_testcancel" :long (source source))
-(defun canceledp (source)
-  (/= 0 (dispatch-source-testcancel source)))
+(defcfun (not-canceled-p "dispatch_source_testcancel") inverted-boolean
+  (source source))
 
 ;;; Managing Time
 
@@ -114,15 +115,15 @@
 
 (defmacro with-object ((var creator) &body body)
   `(let ((,var ,creator))
-     (unwind-protect
-         (progn
-           (retain ,var)
-           ,@body)
-       (release ,var))))
+     (when (not (null-pointer-p ,var))
+       (unwind-protect
+           (progn
+             (retain ,var)
+             ,@body)
+         (release ,var)))))
 
 (defmacro with-semaphore-held ((semaphore timeout) &body body)
-  `(unwind-protect
-       (progn
-         (wait-on-semaphore ,semaphore ,timeout)
-         ,@body)
-     (signal-semaphore ,semaphore)))
+  `(progn
+     (when (wait-on-semaphore ,semaphore ,timeout)
+       (unwind-protect (progn ,@body)
+         (signal-semaphore ,semaphore)))))

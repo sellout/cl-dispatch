@@ -37,7 +37,7 @@
            #:merge-data
            #:cancel-handler #:event-handler
            #:set-timer
-           #:canceledp
+           #:not-canceled-p
            ;; Managing Time
            #:offset-time
            ;; constants

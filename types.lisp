@@ -8,3 +8,14 @@
 (defctype source :pointer) ; "dispatch_source_t"
 (defctype source-type :pointer) ; "dispatch_source_type_t"
 (defctype uintptr :pointer) ; "uintptr_t"
+
+(define-foreign-type inverted-boolean ()
+  ()
+  (:actual-type :long)
+  (:simple-parser inverted-boolean))
+
+(defmethod expand-to-foreign (value (type inverted-boolean))
+  `(if ,value 1 0))
+
+(defmethod expand-from-foreign (value (type inverted-boolean))
+  `(not (zerop ,value)))
