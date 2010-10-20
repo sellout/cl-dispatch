@@ -2,6 +2,8 @@
 
 (include "dispatch/dispatch.h")
 
+;;; base
+
 (cunion object "dispatch_object_t"
         (do "_do" :type :pointer)
         (dc "_dc" :type :pointer)
@@ -14,23 +16,50 @@
         (da "_da" :type :pointer)
         (dsema "_dsema" :type semaphore))
 
+;;; queue
+
 (cenum queue-priority
        ((:high "DISPATCH_QUEUE_PRIORITY_HIGH"))
        ((:default "DISPATCH_QUEUE_PRIORITY_DEFAULT"))
        ((:low "DISPATCH_QUEUE_PRIORITY_LOW")))
 
+;;; source
+
+(cenum (source-type :base-type :pointer)
+       ((:data-add "DISPATCH_SOURCE_TYPE_DATA_ADD"))
+       ((:data-or "DISPATCH_SOURCE_TYPE_DATA_OR"))
+       ((:mach-receive "DISPATCH_SOURCE_TYPE_MACH_RECV"))
+       ((:mach-send "DISPATCH_SOURCE_TYPE_MACH_SEND"))
+       ((:process "DISPATCH_SOURCE_TYPE_PROC"))
+       ((:read "DISPATCH_SOURCE_TYPE_READ"))
+       ((:signal "DISPATCH_SOURCE_TYPE_SIGNAL"))
+       ((:timer "DISPATCH_SOURCE_TYPE_TIMER"))
+       ((:vnode "DISPATCH_SOURCE_TYPE_VNODE"))
+       ((:write "DISPATCH_SOURCE_TYPE_WRITE")))
+
+#| FIXME: It's failing to find these in the headers, even though they appear to exist
+(cenum (mach-send-flags :define-constants t)
+       ((:dead "DISPATCH_MACH_SEND_DEAD")))
+
+(cenum (process-flags :define-constants t)
+       ((:exit "DISPATCH_PROC_EXIT"))
+       ((:fork "DISPATCH_PROC_FORK"))
+       ((:exec "DISPATCH_PROC_EXEC"))
+       ((:signal "DISPATCH_PROC_SIGNAL")))
+
+(cenum (vnode-flags :define-constants t)
+       ((:delete "DISPATCH_VNODE_DELETE"))
+       ((:write "DISPATCH_VNODE_WRITE"))
+       ((:extend "DISPATCH_VNODE_EXTEND"))
+       ((:attribute "DISPATCH_VNODE_ATTRIB"))
+       ((:link-count "DISPATCH_VNODE_LINK"))
+       ((:rename "DISPATCH_VNODE_RENAME"))
+       ((:revoke "DISPATCH_VNODE_REVOKE")))
+|#
+
+;;; time
+
 (constant (now "DISPATCH_TIME_NOW"))
 (constant (forever "DISPATCH_TIME_FOREVER"))
-
-(constant (data-add "DISPATCH_SOURCE_TYPE_DATA_ADD"))
-(constant (data-or "DISPATCH_SOURCE_TYPE_DATA_OR"))
-(constant (mach-receive "DISPATCH_SOURCE_TYPE_MACH_RECV"))
-(constant (mach-send "DISPATCH_SOURCE_TYPE_MACH_SEND"))
-(constant (proc "DISPATCH_SOURCE_TYPE_PROC"))
-(constant (read "DISPATCH_SOURCE_TYPE_READ"))
-(constant (signal "DISPATCH_SOURCE_TYPE_SIGNAL"))
-(constant (timer "DISPATCH_SOURCE_TYPE_TIMER"))
-(constant (vnode "DISPATCH_SOURCE_TYPE_VNODE"))
-(constant (write "DISPATCH_SOURCE_TYPE_WRITE"))
 
 (ctype time "dispatch_time_t")

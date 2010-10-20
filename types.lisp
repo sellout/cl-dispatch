@@ -6,7 +6,6 @@
 (defctype group :pointer) ; "dispatch_group_t"
 (defctype semaphore :pointer) ; "dispatch_semaphore_t"
 (defctype source :pointer) ; "dispatch_source_t"
-(defctype source-type :pointer) ; "dispatch_source_type_t"
 (defctype uintptr :pointer) ; "uintptr_t"
 
 (define-foreign-type inverted-boolean ()

@@ -81,8 +81,31 @@
 (defcfun (cancel "dispatch_source_cancel") :void (source source))
 (defcfun "dispatch_source_create" source
   (type source-type) (handle uintptr) (mask :ulong) (queue queue))
-(defmethod make-instance ((type (eql 'source)) &key type handle mask queue)
+(defmethod make-instance ((type (eql 'source)) &key type (handle 0) (mask 0) queue)
   (dispatch-source-create type handle mask queue))
+(defmethod make-instance ((type (eql 'data-add-source)) &key queue)
+  (make-instance 'source :type :data-add-source :queue queue))
+(defmethod make-instance ((type (eql 'data-or-source)) &key (mask 0) queue)
+  (make-instance 'source :type :data-or-source :mask mask :queue queue))
+(defmethod make-instance ((type (eql 'mach-receive-source)) &key port queue)
+  (make-instance 'source :type :mach-receive-source :handle port :queue queue))
+(defmethod make-instance ((type (eql 'mach-send-source)) &key port events queue)
+  (make-instance 'source
+    :type :mach-send-source :handle port :mask events :queue queue))
+(defmethod make-instance ((type (eql 'process-source)) &key process-id events queue)
+  (make-instance 'source
+    :type :data-process :handle process-id :mask events :queue queue))
+(defmethod make-instance ((type (eql 'read-source)) &key file-descriptor queue)
+  (make-instance 'source :type :read-source :handle file-descriptor :queue queue))
+(defmethod make-instance ((type (eql 'signal-source)) &key number queue)
+  (make-instance 'source :type :signal-source :handle number :queue queue))
+(defmethod make-instance ((type (eql 'timer-source)) &key queue)
+  (make-instance 'source :type :timer-source :queue queue))
+(defmethod make-instance ((type (eql 'vnode-source)) &key file-descriptor events queue)
+  (make-instance 'source
+    :type :vnode-source :handle file-descriptor :mask events :queue queue))
+(defmethod make-instance ((type (eql 'write-source)) &key file-descriptor queue)
+  (make-instance 'source :type :write-source :handle file-descriptor :queue queue))
 (defcfun (data "dispatch_source_get_data") :ulong (source source))
 (defcfun (handle "dispatch_source_get_handle") :uintptr (source source))
 (defcfun (mask "dispatch_source_get_mask") :ulong (source source))
@@ -102,6 +125,22 @@
   (source source) (start time) (interval :uint64) (leeway :uint64))
 (defcfun (not-canceled-p "dispatch_source_testcancel") inverted-boolean
   (source source))
+
+;;; FIXME: These constants should be groveled, but it's not working
+(defconstant dead #x0)
+
+(defconstant exit #x80000000)
+(defconstant fork #x40000000)
+(defconstant exec #x20000000)
+(defconstant signal #x08000000)
+
+(defconstant delete #x1)
+(defconstant write #x2)
+(defconstant extend #x4)
+(defconstant attribute #x8)
+(defconstant link-count #x10)
+(defconstant rename #x20)
+(defconstant revoke #x40)
 
 ;;; Managing Time
 

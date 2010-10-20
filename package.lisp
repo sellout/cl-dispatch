@@ -38,6 +38,27 @@
            #:cancel-handler #:event-handler
            #:set-timer
            #:not-canceled-p
+           #:data-add-source
+           #:data-or-source
+           #:mach-receive-source
+           #:mach-send-source
+           #:process-source
+           #:read-source
+           #:signal-source
+           #:timer-source
+           #:vnode-source
+           #:write-source
+           #:dead
+           #:exit
+           #:fork
+           #:signal
+           #:delete
+           #:write
+           #:extend
+           #:attribute
+           #:link-count
+           #:rename
+           #:revoke
            ;; Managing Time
            #:offset-time
            ;; constants
