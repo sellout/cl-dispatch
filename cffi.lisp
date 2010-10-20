@@ -152,15 +152,20 @@
 
 (defmacro with-object ((var creator) &body body)
   `(let ((,var ,creator))
-     (when (not (null-pointer-p ,var))
-       (unwind-protect
-           (progn
-             (retain ,var)
-             ,@body)
-         (release ,var)))))
+     (retain ,var)
+     (unwind-protect (progn ,@body)
+       (release ,var))))
 
 (defmacro with-semaphore-held ((semaphore timeout) &body body)
-  `(progn
-     (when (wait-on-semaphore ,semaphore ,timeout)
+  (let ((semvar (gensym)))
+    `(let ((,semvar ,semaphore))
+       (when (wait-on-semaphore ,semvar ,timeout)
+         (unwind-protect (progn ,@body)
+           (signal-semaphore ,semvar))))))
+
+(defmacro with-object-suspended ((object) &body body)
+  (let ((objvar (gensym)))
+    `(let ((,objvar ,object))
+       (suspend ,objvar)
        (unwind-protect (progn ,@body)
-         (signal-semaphore ,semaphore)))))
+         (resume ,objvar)))))
