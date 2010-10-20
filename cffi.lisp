@@ -68,7 +68,9 @@
 ;;; Using Semaphores
 
 (defcfun "dispatch_semaphore_create" semaphore (value :long))
-(defmethod make-instance ((type (eql 'semaphore)) &key (value 0))
+(defmethod make-instance
+           ((type (eql 'semaphore))
+            &key (value (error "Can't create a semaphore without a value.")))
   (dispatch-semaphore-create value))
 (defcfun (signal-semaphore "dispatch_semaphore_signal") :long (dsema semaphore))
 (defcfun (wait-on-semaphore "dispatch_semaphore_wait") :long
