@@ -32,3 +32,5 @@
 (constant (timer "DISPATCH_SOURCE_TYPE_TIMER"))
 (constant (vnode "DISPATCH_SOURCE_TYPE_VNODE"))
 (constant (write "DISPATCH_SOURCE_TYPE_WRITE"))
+
+(ctype time "dispatch_time_t")
