@@ -23,7 +23,7 @@
 (defcfun (event-loop "dispatch_main") :void)
 (defcfun "dispatch_queue_create" queue (label :string) (attr queue-attribute))
 (defmethod make-instance
-           ((type (eql 'queue)) &key (label (null-pointer)) (attribute (null-pointer)))
+           ((type (eql 'queue)) &key (label "") (attribute (null-pointer)))
   (dispatch-queue-create label attribute))
 (defcfun (label "dispatch_queue_get_label") :string (queue queue))
 (defcfun "dispatch_set_target_queue" :void (object object) (queue queue))
