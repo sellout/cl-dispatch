@@ -6,14 +6,16 @@
 ;;; NOTE: before this will work, you need to have libdispatch installed
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (oos 'load-op 'cffi-grovel))
+  (mapc #+quicklisp #'ql:quickload #-quicklisp #'asdf:load-system
+        '(cffi-grovel)))
 
 (defsystem dispatch
   :description "CFFI bindings to Grand Central Dispatch."
-  :long-description "Grand Central Dispatch (GCD) is an approach to multicore computing
-                     that is used throughout Mac OS X. GCD combines an easy-to-use
-                     programming model with highly-efficient system services to simplify
-                     the code needed to make best use of multiple processors."
+  :long-description "Grand Central Dispatch (GCD) is an approach to multicore
+                     computing that is used throughout Mac OS X. GCD combines an
+                     easy-to-use programming model with highly-efficient system
+                     services to simplify the code needed to make best use of
+                     multiple processors."
   :license "undecided"
   :author "Greg Pfeil <greg@technomadic.org>"
   :depends-on (cffi cffi-grovel)
