@@ -1,55 +1,61 @@
-(in-package :dispatch)
+(in-package #:dispatch)
 
 (define-foreign-library libdispatch
                         (:darwin (:default "libSystem"))
                         (t (:default "libdispatch")))
 (use-foreign-library libdispatch)
 
-;;; Queuing Tasks for Dispatch
+;;; Creating and Managing Queues
 
-(defcfun (dispatch-after "dispatch_after_f") :void
-  (when time) (queue queue) (context :pointer) (work function))
-(defcfun (dispatch-apply "dispatch_apply_f") :void
-  (iterations :int) ; FIXME: size_t
-  (queue queue)
-  (context :pointer)
-  (work :pointer)) ; void (*work)(void *, size)
-(defcfun (dispatch-async "dispatch_async_f") :void
-  (queue queue) (context :pointer) (work function))
-(defcfun (current-queue "dispatch_get_current_queue") queue)
+(defvar *serial-queue* (make-pointer +serial-queue-address+))
+(defvar *concurrent-queue* (make-pointer +concurrent-queue-address+))
+
 (defcfun (global-queue "dispatch_get_global_queue") queue
   (priority queue-priority) (flags :ulong))
 (defcfun (main-queue "dispatch_get_main_queue") queue)
-(defcfun (event-loop "dispatch_main") :void)
 (defcfun "dispatch_queue_create" queue (label :string) (attr queue-attribute))
-(defmethod make-instance
-           ((type (eql 'queue)) &key (label "") (attribute (null-pointer)))
-  (dispatch-queue-create label attribute))
+(defun make-queue (attr &optional (label (null-pointer)))
+  (dispatch-queue-create label
+                         (ecase attr
+                           (:concurrent *concurrent-queue*)
+                           (:serial *serial-queue*))))
+(defcfun (current-queue "dispatch_get_current_queue") queue)
 (defcfun (label "dispatch_queue_get_label") :string (queue queue))
 (defcfun "dispatch_set_target_queue" :void (object object) (queue queue))
 (defun (setf target-queue) (queue object)
   (dispatch-set-target-queue object queue)
   queue)
-(defcfun (dispatch-sync "dispatch_sync_f") :void
+(defcfun "dispatch_main" :void)
+
+;;; Queuing Tasks for Dispatch
+
+(defcfun "dispatch_async_f" :void
   (queue queue) (context :pointer) (work function))
+(defcfun "dispatch_sync_f" :void
+  (queue queue) (context :pointer) (work function))
+(defcfun "dispatch_after_f" :void
+  (when time) (queue queue) (context :pointer) (work function))
+(defcfun "dispatch_apply_f" :void
+  (iterations :int) ; FIXME: size_t
+  (queue queue)
+  (context :pointer)
+  (work function)) ; void (*work)(void *, size)
 
 ;;; Using Dispatch Groups
 
-(defcfun (dispatch-group-async "dispatch_group_async_f") :void
+(defcfun "dispatch_group_async_f" :void
   (group group) (queue queue) (context :pointer) (work function))
-(defcfun "dispatch_group_create" group)
-(defmethod make-instance ((type (eql 'group)) &key)
-  (dispatch-group-create))
+(defcfun (make-group "dispatch_group_create") group)
 (defcfun (enter "dispatch_group_enter") :void (group group))
 (defcfun (leave "dispatch_group_leave") :void (group group))
-(defcfun (dispatch-group-notify "dispatch_group_notify_f") :void
+(defcfun "dispatch_group_notify_f" :void
   (group group) (queue queue) (context :pointer) (work function))
 (defcfun (wait-on-group "dispatch_group_wait") inverted-boolean
   (group group) (timeout time))
 
 ;;; Managing Dispatch Objects
 
-(defcfun (debug "dispatch_debug") :void (object object) (message :string))
+(defcfun (log-debug-info "dispatch_debug") :void (object object) (message :string))
 (defcfun (context "dispatch_get_context") :pointer (object object))
 (defcfun (release "dispatch_release") :void (object object))
 (defcfun (resume "dispatch_resume") :void (object object))
@@ -66,46 +72,47 @@
 
 ;;; Using Semaphores
 
-(defcfun "dispatch_semaphore_create" semaphore (value :long))
-(defmethod make-instance
-           ((type (eql 'semaphore))
-            &key (value (error "Can't create a semaphore without a value.")))
-  (dispatch-semaphore-create value))
-(defcfun (signal-semaphore "dispatch_semaphore_signal") inverted-boolean
+(defcfun (make-semaphore "dispatch_semaphore_create") semaphore (value :long))
+(defcfun (signal-semaphore "dispatch_semaphore_signal") :boolean
   (dsema semaphore))
 (defcfun (wait-on-semaphore "dispatch_semaphore_wait") inverted-boolean
   (dsema semaphore) (timeout time))
 
-;;; Handling Events
+;;; Using Barriers
+
+(defcfun "dispatch_barrier_async_f" :void
+  (queue queue) (context :pointer) (work function))
+(defcfun "dispatch_barrier_sync_f" :void
+  (queue queue) (context :pointer) (work function))
+
+;;; Managing Dispatch Sources
 
 (defcfun (cancel "dispatch_source_cancel") :void (source source))
 (defcfun "dispatch_source_create" source
   (type source-type) (handle uintptr) (mask :ulong) (queue queue))
-(defmethod make-instance ((type (eql 'source)) &key type (handle 0) (mask 0) queue)
+(defun make-source (type queue &key (handle (null-pointer)) (mask 0))
   (dispatch-source-create type handle mask queue))
-(defmethod make-instance ((type (eql 'data-add-source)) &key queue)
-  (make-instance 'source :type :data-add-source :queue queue))
-(defmethod make-instance ((type (eql 'data-or-source)) &key (mask 0) queue)
-  (make-instance 'source :type :data-or-source :mask mask :queue queue))
-(defmethod make-instance ((type (eql 'mach-receive-source)) &key port queue)
-  (make-instance 'source :type :mach-receive-source :handle port :queue queue))
-(defmethod make-instance ((type (eql 'mach-send-source)) &key port events queue)
-  (make-instance 'source
-    :type :mach-send-source :handle port :mask events :queue queue))
-(defmethod make-instance ((type (eql 'process-source)) &key process-id events queue)
-  (make-instance 'source
-    :type :data-process :handle process-id :mask events :queue queue))
-(defmethod make-instance ((type (eql 'read-source)) &key file-descriptor queue)
-  (make-instance 'source :type :read-source :handle file-descriptor :queue queue))
-(defmethod make-instance ((type (eql 'signal-source)) &key number queue)
-  (make-instance 'source :type :signal-source :handle number :queue queue))
-(defmethod make-instance ((type (eql 'timer-source)) &key queue)
-  (make-instance 'source :type :timer-source :queue queue))
-(defmethod make-instance ((type (eql 'vnode-source)) &key file-descriptor events queue)
-  (make-instance 'source
-    :type :vnode-source :handle file-descriptor :mask events :queue queue))
-(defmethod make-instance ((type (eql 'write-source)) &key file-descriptor queue)
-  (make-instance 'source :type :write-source :handle file-descriptor :queue queue))
+(defun make-data-add-source (queue)
+  (make-source :data-add-source queue))
+(defun make-data-or-source (mask queue)
+  (make-source :data-or-source queue :mask mask))
+(defun make-mach-receive-source (mach-port queue)
+  (make-source :mach-receive-source queue :handle mach-port))
+(defun make-mach-send-source (mach-port desired-events queue)
+  (make-source :mach-send-source queue :handle mach-port :mask desired-events))
+(defun make-process-source (process-id desired-events queue)
+  (make-source :process-source queue :handle process-id :mask desired-events))
+(defun make-read-source (file-descriptor queue)
+  (make-source :read-source queue :handle (make-pointer file-descriptor)))
+(defun make-signal-source (signal-number queue)
+  (make-source :signal-source queue :handle (make-pointer signal-number)))
+(defun make-timer-source (queue)
+  (make-source :timer-source queue))
+(defun make-vnode-source (file-descriptor desired-events queue)
+  (make-source :vnode-source queue
+               :handle (make-pointer file-descriptor) :mask desired-events))
+(defun make-write-source (file-descriptor queue)
+  (make-source :write-source queue :handle (make-pointer file-descriptor)))
 (defcfun (data "dispatch_source_get_data") :ulong (source source))
 (defcfun (handle "dispatch_source_get_handle") :uintptr (source source))
 (defcfun (mask "dispatch_source_get_mask") :ulong (source source))
@@ -123,7 +130,7 @@
   handler)
 (defcfun (set-timer "dispatch_source_set_timer") :void
   (source source) (start time) (interval :uint64) (leeway :uint64))
-(defcfun (not-canceled-p "dispatch_source_testcancel") inverted-boolean
+(defcfun (canceled-p "dispatch_source_testcancel") :boolean
   (source source))
 
 ;;; FIXME: These constants should be groveled, but it's not working

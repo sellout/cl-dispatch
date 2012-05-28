@@ -18,10 +18,14 @@
 
 ;;; queue
 
+(constant (+serial-queue-address+ "DISPATCH_QUEUE_SERIAL"))
+(constant (+concurrent-queue-address+ "DISPATCH_QUEUE_CONCURRENT"))
+
 (cenum queue-priority
        ((:high "DISPATCH_QUEUE_PRIORITY_HIGH"))
        ((:default "DISPATCH_QUEUE_PRIORITY_DEFAULT"))
-       ((:low "DISPATCH_QUEUE_PRIORITY_LOW")))
+       ((:low "DISPATCH_QUEUE_PRIORITY_LOW"))
+       ((:background "DISPATCH_QUEUE_PRIORITY_BACKGROUND")))
 
 ;;; source
 

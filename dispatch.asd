@@ -22,4 +22,6 @@
   :components ((:file "package")
                (:file "types" :depends-on ("package"))
                (cffi-grovel:grovel-file "grovel" :depends-on ("types"))
-               (:file "cffi" :depends-on ("grovel"))))
+               (:file "cffi" :depends-on ("grovel"))
+               (:file "id-map" :depends-on ("cffi"))
+               (:file "dispatching" :depends-on ("id-map"))))

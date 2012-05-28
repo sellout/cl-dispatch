@@ -1,18 +1,19 @@
 (defpackage dispatch
   (:use #:cl #:cffi)
   (:shadow #:function #:time)
-  (:export ;; Queuing Tasks for Dispatch
-           #:dispatch-after
-           #:dispatch-apply
-           #:dispatch-async
-           #:current-queue
+  (:export ;; Creating and Managing Queues
            #:global-queue
            #:main-queue
-           #:event-loop ; aka "dispatch_main"
            #:queue
+           #:current-queue
            #:label
            #:target-queue
+           #:dispatch-main
+           ;; Queuing Tasks for Dispatch
+           #:dispatch-async
            #:dispatch-sync
+           #:dispatch-after
+           #:dispatch-apply
            ;; Using Dispatch Groups
            #:dispatch-group-async
            #:group
@@ -28,14 +29,17 @@
            ;; Using Semaphores
            #:semaphore
            #:signal-semaphore #:wait-on-semaphore
-           ;; Handling Events
+           ;; Using Barriers
+           #:dispatch-barrier-async
+           #:dispatch-barrier-sync
+           ;; Managing Dispatch Sources
            #:cancel
            #:source
            #:data
            #:handle
            #:mask
            #:merge-data
-           #:cancel-handler #:event-handler
+           #:registration-handler #:cancel-handler #:event-handler
            #:set-timer
            #:not-canceled-p
            #:data-add-source
