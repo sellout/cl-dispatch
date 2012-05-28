@@ -1,6 +1,6 @@
 (defpackage dispatch
   (:use #:cl #:cffi)
-  (:shadow #:function #:time)
+  (:shadow #:function #:map #:time #:concatenate #:close)
   (:export ;; Creating and Managing Queues
            #:global-queue
            #:main-queue
@@ -65,7 +65,24 @@
            #:link-count
            #:rename
            #:revoke
+           ;; Using the Dispatch I/O Channel API
+           #:close
+           #:high-water
+           #:low-water
+           #:interval
+           ;; Managing Dispatch Data Objects
+           #:make-data
+           #:size
+           #:map
+           #:concatenate
+           #:subrange
+           #:copy-region
+           #:+empty-data+
+           #:+default-data-destructor+
+           #:+free-data-destructor+
            ;; Managing Time
            #:offset-time
-           ;; constants
-           #:+now+ #:+forever+))
+           #:+now+ #:+forever+
+           ;; Managing Queue-Specific Context Data
+           #:queue-specific-context
+           #:current-queue-specific-context))

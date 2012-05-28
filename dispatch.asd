@@ -16,12 +16,24 @@
                      easy-to-use programming model with highly-efficient system
                      services to simplify the code needed to make best use of
                      multiple processors."
-  :license "undecided"
+  :license "MIT"
   :author "Greg Pfeil <greg@technomadic.org>"
   :depends-on (cffi cffi-grovel)
-  :components ((:file "package")
-               (:file "types" :depends-on ("package"))
-               (cffi-grovel:grovel-file "grovel" :depends-on ("types"))
-               (:file "cffi" :depends-on ("grovel"))
-               (:file "id-map" :depends-on ("cffi"))
-               (:file "dispatching" :depends-on ("id-map"))))
+  :components
+  ((:file "package")
+   (:file "cffi" :depends-on ("package"))
+   (:file "id-map" :depends-on ("using-semaphores"))
+   (:file "dispatching" :depends-on ("id-map"))
+   (:file "types" :depends-on ("package"))
+   (cffi-grovel:grovel-file "grovel" :depends-on ("types"))
+   (:file "creating-and-managing-queues" :depends-on ("types"))
+   (:file "queuing-tasks-for-dispatch" :depends-on ("dispatching"))
+   (:file "using-dispatch-groups" :depends-on ("dispatching"))
+   (:file "managing-dispatch-objects" :depends-on ("types"))
+   (:file "using-semaphores" :depends-on ("grovel"))
+   (:file "using-barriers" :depends-on ("dispatching"))
+   (:file "managing-dispatch-sources" :depends-on ("types"))
+   (:file "using-the-dispatch-io-channel-api" :depends-on ("grovel"))
+   (:file "managing-dispatch-data-objects" :depends-on ("grovel"))
+   (:file "managing-time" :depends-on ("types"))
+   (:file "managing-queue-specific-context-data" :depends-on ("types"))))

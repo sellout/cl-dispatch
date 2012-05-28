@@ -1,5 +1,7 @@
 (in-package :dispatch)
 
+(ctype size "size_t")
+
 (include "dispatch/dispatch.h")
 
 ;;; base
@@ -12,9 +14,19 @@
         (dg "_dg" :type group)
         (ds "_ds" :type source)
         (dsa "_dsa" :type :pointer)
-        (de "_de" :type :pointer)
-        (da "_da" :type :pointer)
-        (dsema "_dsema" :type semaphore))
+        (dsema "_dsema" :type semaphore)
+        (ddata "_ddata" :type data)
+        (dchannel "_dchannel" :type io)
+        (doperation "_doperation" :type :pointer)
+        (dfld "_dfld" :type :pointer))
+
+;;; data
+
+(constant (+empty-data+ "dispatch_data_empty"))
+
+(constant (+default-data-destructor+ "DISPATCH_DATA_DESTRUCTOR_DEFAULT"))
+;; FIXME: isn't groveling properly
+;; (constant (+free-data-destructor+ "DISPATCH_DATA_DESTRUCTOR_FREE"))
 
 ;;; queue
 
@@ -67,3 +79,12 @@
 (constant (+forever+ "DISPATCH_TIME_FOREVER"))
 
 (ctype time "dispatch_time_t")
+
+;;; channel
+
+(constant (+stop+ "DISPATCH_IO_STOP"))
+
+(constant (+strict-interval+ "DISPATCH_IO_STRICT_INTERVAL"))
+
+(ctype io-close-flags "dispatch_io_close_flags_t")
+(ctype io-interval-flags "dispatch_io_interval_flags_t")

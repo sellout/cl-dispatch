@@ -8,6 +8,10 @@
 (defctype source :pointer) ; "dispatch_source_t"
 (defctype uintptr :pointer) ; "uintptr_t"
 
+(defctype data :pointer) ; "dispatch_data_t"
+
+(defctype io :pointer) ; "dispatch_io_t"
+
 (define-foreign-type inverted-boolean ()
   ()
   (:actual-type :long)
