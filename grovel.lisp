@@ -59,7 +59,7 @@
 
 ;;; time
 
-(constant (now "DISPATCH_TIME_NOW"))
-(constant (forever "DISPATCH_TIME_FOREVER"))
+(constant (+now+ "DISPATCH_TIME_NOW"))
+(constant (+forever+ "DISPATCH_TIME_FOREVER"))
 
 (ctype time "dispatch_time_t")

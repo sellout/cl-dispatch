@@ -62,7 +62,7 @@
            ;; Managing Time
            #:offset-time
            ;; constants
-           #:now #:forever
+           #:+now+ #:+forever+
            #:data-add #:data-or #:mach-receive #:mach-send
            #:proc #:read #:signal #:timer #:vnode #:write
            ;; convenience functions
