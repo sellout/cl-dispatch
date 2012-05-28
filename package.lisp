@@ -26,32 +26,34 @@
            #:release #:retain
            #:resume #:suspend
            #:finalizer
+           #:with-object #:with-object-suspended
            ;; Using Semaphores
            #:semaphore
            #:signal-semaphore #:wait-on-semaphore
+           #:with-semaphore-held
            ;; Using Barriers
            #:dispatch-barrier-async
            #:dispatch-barrier-sync
            ;; Managing Dispatch Sources
            #:cancel
-           #:source
+           #:make-source
            #:data
            #:handle
            #:mask
            #:merge-data
            #:registration-handler #:cancel-handler #:event-handler
            #:set-timer
-           #:not-canceled-p
-           #:data-add-source
-           #:data-or-source
-           #:mach-receive-source
-           #:mach-send-source
-           #:process-source
-           #:read-source
-           #:signal-source
-           #:timer-source
-           #:vnode-source
-           #:write-source
+           #:canceled-p
+           #:make-data-add-source
+           #:make-data-or-source
+           #:make-mach-receive-source
+           #:make-mach-send-source
+           #:make-process-source
+           #:make-read-source
+           #:make-signal-source
+           #:make-timer-source
+           #:make-vnode-source
+           #:make-write-source
            #:dead
            #:exit
            #:fork
@@ -66,8 +68,4 @@
            ;; Managing Time
            #:offset-time
            ;; constants
-           #:+now+ #:+forever+
-           #:data-add #:data-or #:mach-receive #:mach-send
-           #:proc #:read #:signal #:timer #:vnode #:write
-           ;; convenience functions
-           #:with-object #:with-semaphore-held))
+           #:+now+ #:+forever+))
