@@ -14,7 +14,7 @@
   (:simple-parser inverted-boolean))
 
 (defmethod expand-to-foreign (value (type inverted-boolean))
-  `(if ,value 1 0))
+  `(if ,value 0 1))
 
 (defmethod expand-from-foreign (value (type inverted-boolean))
-  `(not (zerop ,value)))
+  `(zerop ,value))
