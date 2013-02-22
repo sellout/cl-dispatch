@@ -9,10 +9,10 @@
   (data data) (buffer :pointer) (size :pointer))
 (defun map (data)
   (with-foreign-objects ((buffer :pointer)
-                         (size size))
+                         (size 'size))
     (values (dispatch-data-create-map data buffer size)
             (mem-ref buffer :pointer)
-            (mem-ref size size))))
+            (mem-ref size 'size))))
 
 (defcfun (concatenate "dispatch_data_create_concat") data
   (data1 data) (data2 data))
@@ -23,6 +23,6 @@
 (defcfun "dispatch_data_copy_region" data
   (data data) (location size) (offset :pointer))
 (defun copy-region (data location)
-  (with-foreign-object (offset size)
+  (with-foreign-object (offset 'size)
     (values (dispatch-data-copy-region data location offset)
-            (mem-ref offset size))))
+            (mem-ref offset 'size))))
