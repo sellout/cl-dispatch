@@ -58,32 +58,32 @@
 ;;; FIXME: These constants should be groveled, but it's not working
 
 ;; mach-send-source flags
-(defconstant dead #x0
+(defconstant +dead+ #x0
   "The receive right corresponding to the given send right was destroyed.")
 
 ;; process-source flags
-(defconstant exit #x80000000
+(defconstant +exit+ #x80000000
   "The process has exited (perhaps cleanly, perhaps not).")
-(defconstant fork #x40000000
+(defconstant +fork+ #x40000000
   "The process has created one or more child processes.")
-(defconstant exec #x20000000
+(defconstant +exec+ #x20000000
   "The process has become another executable image via an exec or posix_spawn
    function family call.")
-(defconstant signal #x08000000
+(defconstant +signal+ #x08000000
   "A Unix signal was delivered to the process.")
 
 ;; vnode-source flags
-(defconstant delete #x1
+(defconstant +delete+ #x1
   "The file-system object was deleted from the namespace.")
-(defconstant write #x2
+(defconstant +write+ #x2
   "The file-system object data changed.")
-(defconstant extend #x4
+(defconstant +extend+ #x4
   "The file-system object changed in size.")
-(defconstant attribute #x8
+(defconstant +attribute+ #x8
   "The file-system object metadata changed.")
-(defconstant link-count #x10
+(defconstant +link-count+ #x10
   "The file-system object link count changed.")
-(defconstant rename #x20
+(defconstant +rename+ #x20
   "The file-system object was renamed in the namespace.")
-(defconstant revoke #x40
+(defconstant +revoke+ #x40
   "The file-system object was revoked.")

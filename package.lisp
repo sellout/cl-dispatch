@@ -54,17 +54,18 @@
            #:make-timer-source
            #:make-vnode-source
            #:make-write-source
-           #:dead
-           #:exit
-           #:fork
-           #:signal
-           #:delete
-           #:write
-           #:extend
-           #:attribute
-           #:link-count
-           #:rename
-           #:revoke
+           #:+dead+
+           #:+exit+
+           #:+fork+
+           #:+exec+
+           #:+signal+
+           #:+delete+
+           #:+write+
+           #:+extend+
+           #:+attribute+
+           #:+link-count+
+           #:+rename+
+           #:+revoke+
            ;; Using the Dispatch I/O Channel API
            #:close
            #:high-water
