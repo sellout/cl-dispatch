@@ -13,5 +13,6 @@
      ,docstring
      (,(intern (format nil "~A-F" name))
        ,@(butlast lambda-list)
-       (make-pointer (assign-id-map-id *dispatch-id-map* ,(car (last lambda-list))))
+       (make-pointer (assign-id-map-id *dispatch-id-map*
+                                       ,(car (last lambda-list))))
        (callback dispatch-callback))))
