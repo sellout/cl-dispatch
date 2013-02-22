@@ -4,7 +4,7 @@
   (:export ;; Creating and Managing Queues
            #:global-queue
            #:main-queue
-           #:queue
+           #:make-queue
            #:current-queue
            #:label
            #:target-queue
@@ -28,7 +28,7 @@
            #:finalizer
            #:with-object #:with-object-suspended
            ;; Using Semaphores
-           #:semaphore
+           #:make-semaphore
            #:signal-semaphore #:wait-on-semaphore
            #:with-semaphore-held
            ;; Using Barriers
